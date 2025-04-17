@@ -1,6 +1,6 @@
 # AutoGen A2A Weather Agent
 
-This sample demonstrates how to implement an A2A protocol server using Microsoft's AutoGen framework. The implementation creates a simple Weather Agent that provides (simulated) weather information via tool calls for various locations.
+This sample demonstrates how to implement an A2A protocol server using Microsoft's [AutoGen](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/index.html) framework. The implementation creates a simple Weather Agent that provides (simulated) weather information via tool calls for various locations.
 
 ## Overview
 
@@ -44,7 +44,9 @@ sequenceDiagram
 
     %% Streaming flow
     Client->>Server: Send streaming task request
-    Server->>Client: Initial "Processing..." status
+    Server->>Agent: Forward query to WeatherAgent
+    Agent->>Server: Initial "Processing..." status
+    Server->>Client: Stream initial status update
 
     Agent->>Tool: Call get_weather tool
     Tool->>Agent: Return weather data
@@ -54,7 +56,7 @@ sequenceDiagram
         Server->>Client: Stream status updates
     end
 
-    Agent->>Server: Final result
+    Agent->>Server: Final result with TaskState.COMPLETED
     Server->>Client: Stream completed status and artifact
 ```
 
@@ -109,7 +111,7 @@ sequenceDiagram
 
 - Uses a simulated weather API with a limited set of predefined locations
 - No authentication or rate limiting
-- In-memory storage (state is lost when server restarts) (You can persist data using the AutoGen `team.save_state()` and `team.load_state()` )
+- In-memory storage (state is lost when server restarts) (You can persist data using the AutoGen `team.save_state()` and `team.load_state()` methods in AutGen. See the [AutoGen Managing State documentation](https://microsoft.github.io/autogen/dev/user-guide/agentchat-user-guide/tutorial/state.html) for more details.)
 
 ## Further Enhancements
 
@@ -124,4 +126,4 @@ Potential improvements to the implementation:
 ## References
 
 - [A2A Protocol](https://github.com/google/A2A)
-- [AutoGen Framework](https://microsoft.github.io/autogen/)
+- [AutoGen Framework](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/index.html)
