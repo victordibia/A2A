@@ -2,21 +2,18 @@
 A2A agent implementation using AutoGen's RoundRobinGroupChat with a weather tool.
 """
 
-import os
-import logging
+import os 
 from typing import Dict, Any, AsyncIterable
-
+ 
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.base import TaskResult
 from autogen_agentchat.teams import RoundRobinGroupChat
 from autogen_agentchat.conditions import TextMentionTermination, MaxMessageTermination
 from autogen_agentchat.messages import ModelClientStreamingChunkEvent
 from autogen_ext.models.openai import OpenAIChatCompletionClient
-from autogen_core import CancellationToken 
+from autogen_core import CancellationToken  
 
-# Basic logging configuration
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+ 
 
 # Weather tool implementation
 async def get_weather(location: str, unit: str = "celsius") -> str:
@@ -43,19 +40,21 @@ async def get_weather(location: str, unit: str = "celsius") -> str:
         "San Francisco": {"temp": 19, "condition": "Foggy", "humidity": 75},
         "Chicago": {"temp": 15, "condition": "Windy", "humidity": 60},
     }
+     
+    location_key = next((k for k in weather_data.keys() if k.lower() == location.lower()), None)
     
     # Default response for unknown locations
-    if location not in weather_data:
+    if not location_key:
         return f"Weather data for {location} is not available."
     
-    data = weather_data[location]
+    data = weather_data[location_key]
     temp = data["temp"]
     
     # Convert to fahrenheit if requested
     if unit.lower() == "fahrenheit":
         temp = temp * 9/5 + 32
     
-    return f"The weather in {location} is {data['condition']} with a temperature of {temp}°{'F' if unit.lower() == 'fahrenheit' else 'C'} and humidity of {data['humidity']}%."
+    return f"The weather in {location_key} is {data['condition']} with a temperature of {temp}°{'F' if unit.lower() == 'fahrenheit' else 'C'} and humidity of {data['humidity']}%."
 
 
 class WeatherAgent:
@@ -81,10 +80,8 @@ class WeatherAgent:
             model_client=model_client,
             system_message=(
                 "You are a helpful weather assistant that can provide weather information. "
-                "Use the get_weather tool to look up current weather. "
-                "Be concise but friendly in your responses. "
-                "If the user asks about anything other than weather, politely inform them "
-                "that you can only provide weather information but also provide a helpful response to their query."
+                "Use the get_weather tool to look up current weather. " 
+                "If the user asks about anything other than weather, respond to them very briefly but also politely let them know that you can only provide weather information. Once you have responded to the user, end with 'TERMINATE'."
             ),
             tools=[get_weather],
             model_client_stream=False,  # Enable streaming tokens
@@ -148,5 +145,5 @@ class WeatherAgent:
                 yield {
                     "is_task_complete": True,
                     "require_user_input": False,
-                    "content": "Task completed successfully."
+                    "content": f"Task completed successfully. Reason: {message.stop_reason}"
                 }

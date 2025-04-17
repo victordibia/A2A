@@ -45,13 +45,9 @@ class WeatherTaskManager(InMemoryTaskManager):
         task_send_params: TaskSendParams = request.params
         query = self._get_user_query(task_send_params)
         try:
-            # First notify client we're working
-            
-            
             # Process stream from agent
             async for item in self.agent.stream(query, task_send_params.sessionId):
-                is_task_complete = item["is_task_complete"]
-                artifacts = None
+                is_task_complete = item["is_task_complete"] 
                 
                 if not is_task_complete:
                     # Progress updates
@@ -70,41 +66,21 @@ class WeatherTaskManager(InMemoryTaskManager):
                 # Update task store
                 await self.update_store(
                     task_send_params.id, 
-                    task_status, 
-                    artifacts
+                    task_status,  
                 )
                 
-                # Send status update to client
+                # Send status update to client - mark as final if complete
                 yield SendTaskStreamingResponse(
                     id=request.id,
                     result=TaskStatusUpdateEvent(
                         id=task_send_params.id,
                         status=task_status,
-                        final=False,
+                        final=is_task_complete,
                     ),
                 )
                 
-                # Send artifacts if available
-                if artifacts:
-                    for artifact in artifacts:
-                        yield SendTaskStreamingResponse(
-                            id=request.id,
-                            result=TaskArtifactUpdateEvent(
-                                id=task_send_params.id,
-                                artifact=artifact,
-                            ),
-                        )
+                 
                 
-                # Send final update when complete
-                if is_task_complete:
-                    yield SendTaskStreamingResponse(
-                        id=request.id,
-                        result=TaskStatusUpdateEvent(
-                            id=task_send_params.id,
-                            status=TaskStatus(state=task_status.state),
-                            final=True,
-                        ),
-                    )
         except Exception as e:
             logger.error(f"An error occurred while streaming the response: {e}")
             yield JSONRPCResponse(

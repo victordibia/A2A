@@ -1,10 +1,10 @@
 # AutoGen A2A Weather Agent
 
-This sample demonstrates how to implement an A2A protocol server using Microsoft's AutoGen framework. The implementation creates a simple Weather Agent that provides weather information for various locations.
+This sample demonstrates how to implement an A2A protocol server using Microsoft's AutoGen framework. The implementation creates a simple Weather Agent that provides (simulated) weather information via tool calls for various locations.
 
 ## Overview
 
-The Weather Agent is implemented as a RoundRobinGroupChat with a single AssistantAgent that has access to a weather lookup tool. The implementation follows the A2A protocol specification for agent-to-agent communication.
+The Weather Agent is implemented as a RoundRobinGroupChat with a single AssistantAgent that has access to a simulated weather lookup tool. The implementation follows the A2A protocol specification for agent-to-agent communication.
 
 Key features:
 
@@ -63,88 +63,53 @@ sequenceDiagram
 - Python 3.12 or higher
 - OpenAI API key
 
-## Installation
+## Setup & Running
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/yourusername/a2a-autogen-weather.git
-   cd a2a-autogen-weather
-   ```
-
-2. Install the dependencies:
+1. Navigate to the samples directory:
 
    ```bash
-   pip install -e .
+   cd samples/python/agents/autogen
    ```
 
-3. Set the OpenAI API key:
+2. Setup the environment file with your Open
+
    ```bash
-   export OPENAI_API_KEY=your-openai-api-key
+   export OPENAI_API_KEY=your_openai_api_key
    ```
 
-## Running the Server
+3. Set up the Python environment:
 
-Start the server with:
+   ```bash
+   uv python pin 3.12
+   uv venv
+   source .venv/bin/activate
+   ```
 
-```bash
-python -m a2a_autogen_weather
-```
+4. Run the agent with desired options:
 
-Or specify a custom host and port:
+   ```bash
+   # Basic run
+   uv run .
 
-```bash
-python -m a2a_autogen_weather --host 0.0.0.0 --port 8080
-```
+   # On custom host/port
+   uv run . --host 0.0.0.0 --port 10000
+   ```
 
-## Using the A2A Weather Agent
+5. In a separate terminal, run the A2A client:
 
-Once the server is running, you can interact with it using any A2A-compatible client. The agent provides a weather information service with:
+   ```bash
+   # Connect to the agent (specify the agent URL with correct port)
+   uv run hosts/cli --agent http://localhost:10000
 
-- Current temperature
-- Weather conditions
-- Humidity
-
-Sample Queries:
-
-- "What's the weather like in Tokyo?"
-- "How's the weather in New York?"
-- "What's the temperature in London?"
-- "Weather in Paris"
-
-## A2A Protocol Integration
-
-The implementation follows the A2A protocol by:
-
-1. Exposing an Agent Card at `/.well-known/agent.json`
-2. Supporting task creation through `tasks/send`
-3. Supporting streaming through `tasks/sendSubscribe`
-4. Following the A2A task lifecycle (submitted → working → completed)
-
-## WeatherAgent Implementation
-
-The WeatherAgent wraps AutoGen's AssistantAgent with a weather tool:
-
-```python
-self.weather_assistant = AssistantAgent(
-    name="weather_assistant",
-    model_client=self.model_client,
-    system_message="You are a helpful weather assistant...",
-    tools=[get_weather],
-    model_client_stream=True,
-)
-
-self.team = RoundRobinGroupChat(
-    [self.weather_assistant],
-    termination_condition=self.termination
-)
-```
+   # If you changed the port when starting the agent, use that port instead
+   # uv run hosts/cli --agent http://localhost:YOUR_PORT
+   ```
 
 ## Limitations
 
 - Uses a simulated weather API with a limited set of predefined locations
 - No authentication or rate limiting
-- In-memory storage (state is lost when server restarts)
+- In-memory storage (state is lost when server restarts) (You can persist data using the AutoGen `team.save_state()` and `team.load_state()` )
 
 ## Further Enhancements
 
