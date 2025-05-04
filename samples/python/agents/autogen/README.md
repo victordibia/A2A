@@ -4,7 +4,7 @@ This sample demonstrates how to implement an A2A protocol server using Microsoft
 
 ## Overview
 
-The Weather Agent is implemented as a RoundRobinGroupChat with a single AssistantAgent that has access to a simulated weather lookup tool. The implementation follows the A2A protocol specification for agent-to-agent communication.
+The Weather Agent is implemented as a RoundRobinGroupChat [team](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/teams.html) with a single AssistantAgent that has access to a simulated weather lookup tool. The implementation follows the A2A protocol specification for agent-to-agent communication.
 
 Key features:
 
@@ -118,10 +118,10 @@ sequenceDiagram
 Potential improvements to the implementation:
 
 - Add integration with a real weather API
-- Implement authentication and authorization
+- Expand the team with multiple agents for different tasks
 - Add persistent storage for tasks and sessions
-- Support for forecasts and historical weather data
-- Add location detection support
+
+See the refernences below for more information on the A2A protocol and AutoGen framework.
 
 ## References
 
