@@ -2,7 +2,6 @@
 
 ![image info](images/A2A_banner.png)
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Super-Linter](https://github.com/google/A2A/actions/workflows/linter/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 **_An open protocol enabling communication and interoperability between opaque agentic applications._**
 
@@ -12,8 +11,8 @@
   - [See A2A in Action](#see-a2a-in-action)
   - [Conceptual Overview](#conceptual-overview)
     - [Typical Flow](#typical-flow)
-  - [Getting Started](#getting-started)
-  - [Contributing](#contributing)
+    - [Getting Started](#getting-started)
+    - [Contributing](#contributing)
   - [What's next](#whats-next)
   - [About](#about)
 
@@ -30,7 +29,7 @@ Watch [this demo video](https://storage.googleapis.com/gweb-developer-goog-blog-
 
 The Agent2Agent (A2A) protocol facilitates communication between independent AI agents. Here are the core concepts:
 
-- **Agent Card:** A public metadata file (usually at `/.well-known/agent.json`) describing an agent's capabilities, skills, endpoint URL, and authentication requirements. Clients use this for discovery.
+- **Agent Card:** A public metadata file (usually at `./well-known/agent.json`) describing an agent's capabilities, skills, endpoint URL, and authentication requirements. Clients use this for discovery.
 - **A2A Server:** An agent exposing an HTTP endpoint that implements the A2A protocol methods (defined in the [json specification](/specification)). It receives requests and manages task execution.
 - **A2A Client:** An application or another agent that consumes A2A services. It sends requests (like `tasks/send`) to an A2A Server's URL.
 - **Task:** The central unit of work. A client initiates a task by sending a message (`tasks/send` or `tasks/sendSubscribe`). Tasks have unique IDs and progress through states (`submitted`, `working`, `input-required`, `completed`, `failed`, `canceled`).
@@ -50,8 +49,7 @@ The Agent2Agent (A2A) protocol facilitates communication between independent AI 
 4.  **Interaction (Optional):** If the task enters `input-required`, the client sends subsequent messages using the same Task ID via `tasks/send` or `tasks/sendSubscribe`.
 5.  **Completion:** The task eventually reaches a terminal state (`completed`, `failed`, `canceled`).
 
-
-### **Getting Started**
+### Getting Started
 
 * 📚 Read the [technical documentation](https://google.github.io/A2A/#/documentation) to understand the capabilities
 * 📝 Review the [json specification](/specification) of the protocol structures
@@ -70,12 +68,12 @@ The Agent2Agent (A2A) protocol facilitates communication between independent AI 
     * [Semantic Kernel](/samples/python/agents/semantickernel/README.md)
     * [AG2 + MCP](/samples/python/agents/ag2/README.md)
 * 📑 Review key topics to understand protocol details 
-    * [A2A and MCP](https://google.github.io/A2A/#/topics/a2a_and_mcp.md)
-    * [Agent Discovery](https://google.github.io/A2A/#/topics/agent_discovery.md)
-    * [Enterprise Ready](https://google.github.io/A2A/#/topics/enterprise_ready.md)
-    * [Push Notifications](https://google.github.io/A2A/#/topics/push_notifications.md) 
+    * [A2A and MCP](https://google.github.io/A2A/topics/a2a_and_mcp/)
+    * [Agent Discovery](https://google.github.io/A2A/topics/agent_discovery/)
+    * [Enterprise Ready](https://google.github.io/A2A/topics/enterprise_ready/)
+    * [Push Notifications](https://google.github.io/A2A/topics/push_notifications/) 
 
-### **Contributing**
+### Contributing
 
 We highly value community contributions and appreciate your interest in A2A Protocol! Here's how you can get involved:
 
